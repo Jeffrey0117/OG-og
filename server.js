@@ -81,7 +81,7 @@ async function exportPng(t, d) {
   }
 }
 
-const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css" };
+const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css", ".svg": "image/svg+xml" };
 
 http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);

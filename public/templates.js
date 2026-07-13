@@ -12,7 +12,7 @@ const clamp = (s = "", n) => (String(s).length > n ? String(s).slice(0, n - 1) +
 
 const logoImg = (d, size = 44) =>
   d.logo
-    ? `<img src="${esc(d.logo)}" style="width:${size}px;height:${size}px;border-radius:10px;object-fit:cover" onerror="this.style.display='none'">`
+    ? `<img src="${esc(d.logo)}" style="width:${size}px;height:${size}px;border-radius:10px;object-fit:${d.logoFit||"cover"}" onerror="this.style.display='none'">`
     : "";
 
 const TEMPLATES = [
@@ -31,7 +31,7 @@ const TEMPLATES = [
         </div>
         ${d.image ? `<div style="width:440px;display:flex;align-items:center;justify-content:center;position:relative">
           <div style="position:absolute;width:360px;height:360px;border-radius:50%;background:${esc(d.color)}1d"></div>
-          <img src="${esc(d.image)}" style="width:380px;height:380px;object-fit:cover;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.18);position:relative">
+          <img src="${esc(d.image)}" style="width:380px;height:380px;object-fit:${d.imageFit||"cover"};border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.18);position:relative">
         </div>` : ""}
       </div>`,
   },
@@ -42,7 +42,7 @@ const TEMPLATES = [
     render: (d) => `
       <div style="width:1200px;height:630px;background:#f6f5f2;font-family:${FONT};display:flex;align-items:center;overflow:hidden">
         <div style="width:540px;display:flex;justify-content:center">
-          ${d.image ? `<img src="${esc(d.image)}" style="width:420px;height:420px;object-fit:cover;border-radius:20px;transform:rotate(-6deg);box-shadow:0 30px 60px rgba(0,0,0,.22);border:10px solid #fff">` : ""}
+          ${d.image ? `<img src="${esc(d.image)}" style="width:420px;height:420px;object-fit:${d.imageFit||"cover"};border-radius:20px;transform:rotate(-6deg);box-shadow:0 30px 60px rgba(0,0,0,.22);border:10px solid #fff">` : ""}
         </div>
         <div style="flex:1;padding:0 80px 0 20px;display:flex;flex-direction:column;gap:24px;min-width:0">
           <div style="display:flex;align-items:center;gap:12px">${logoImg(d, 36)}<span style="font-size:22px;font-weight:700;color:#888">${esc(d.site)}</span></div>
@@ -65,7 +65,7 @@ const TEMPLATES = [
           <span style="align-self:flex-start;background:#ff4757;color:#fff;font-size:24px;font-weight:800;padding:14px 34px;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.25)">立即加入</span>
         </div>
         ${d.image ? `<div style="width:430px;display:flex;align-items:center;justify-content:center">
-          <img src="${esc(d.image)}" style="width:370px;height:460px;object-fit:cover;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.35);border:8px solid #ffffff44">
+          <img src="${esc(d.image)}" style="width:370px;height:460px;object-fit:${d.imageFit||"cover"};border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.35);border:8px solid #ffffff44">
         </div>` : ""}
       </div>`,
   },
@@ -75,7 +75,7 @@ const TEMPLATES = [
     note: "og 圖當底,字壓上去",
     render: (d) => `
       <div style="width:1200px;height:630px;font-family:${FONT};position:relative;overflow:hidden;background:#111">
-        ${d.image ? `<img src="${esc(d.image)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` : ""}
+        ${d.image ? `<img src="${esc(d.image)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:${d.imageFit||"cover"}">` : ""}
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(0,0,0,.82))"></div>
         <div style="position:absolute;left:70px;right:70px;bottom:56px;display:flex;flex-direction:column;gap:18px">
           <div style="display:flex;align-items:center;gap:12px">${logoImg(d, 40)}<span style="font-size:24px;font-weight:700;color:#fffc">${esc(d.site)}</span></div>
@@ -110,7 +110,7 @@ const TEMPLATES = [
           <div style="font-size:23px;color:#8b949e;line-height:1.6">${esc(clamp(d.desc, 70))}</div>
         </div>
         ${d.image ? `<div style="width:420px;display:flex;align-items:center;justify-content:center">
-          <img src="${esc(d.image)}" style="width:340px;height:340px;object-fit:cover;border-radius:20px;box-shadow:0 0 80px ${esc(d.color)}66">
+          <img src="${esc(d.image)}" style="width:340px;height:340px;object-fit:${d.imageFit||"cover"};border-radius:20px;box-shadow:0 0 80px ${esc(d.color)}66">
         </div>` : ""}
       </div>`,
   },
@@ -152,7 +152,7 @@ const TEMPLATES = [
           <div style="font-size:46px;font-weight:900;line-height:1.3;color:#fff">${esc(clamp(d.title, 34))}</div>
         </div>
         <div style="flex:1;background:#fff;display:flex;flex-direction:column;justify-content:center;gap:26px;padding:0 60px;min-width:0">
-          ${d.image ? `<img src="${esc(d.image)}" style="width:100%;height:300px;object-fit:cover;border-radius:18px;box-shadow:0 16px 40px rgba(0,0,0,.14)">` : ""}
+          ${d.image ? `<img src="${esc(d.image)}" style="width:100%;height:300px;object-fit:${d.imageFit||"cover"};border-radius:18px;box-shadow:0 16px 40px rgba(0,0,0,.14)">` : ""}
           <div style="font-size:23px;color:#555;line-height:1.65">${esc(clamp(d.desc, 84))}</div>
         </div>
       </div>`,
