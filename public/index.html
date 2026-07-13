@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>og-studio — OG 圖試衣間</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box }
+  body { font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; background:#f4f4f0; color:#1a1a1a; min-height:100vh }
+  header { padding:34px 40px 6px; display:flex; align-items:baseline; gap:14px }
+  header h1 { font-size:26px; font-weight:900 }
+  header span { color:#999; font-size:14px }
+  .bar { display:flex; gap:10px; padding:18px 40px; flex-wrap:wrap }
+  .bar input[type=url] { flex:1; min-width:320px; font-size:16px; padding:14px 18px; border:2px solid #ddd; border-radius:12px; outline:none }
+  .bar input[type=url]:focus { border-color:#111 }
+  .bar button { font-size:16px; font-weight:800; padding:14px 30px; border:0; border-radius:12px; background:#111; color:#fff; cursor:pointer }
+  .bar button:disabled { opacity:.5; cursor:wait }
+  .fields { display:none; gap:10px; padding:0 40px 8px; flex-wrap:wrap }
+  .fields label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:#888; font-weight:700 }
+  .fields input { font-size:14px; padding:9px 12px; border:1.5px solid #ddd; border-radius:9px; outline:none; width:230px }
+  .fields input[type=color] { width:52px; height:38px; padding:2px; cursor:pointer }
+  #status { padding:0 40px 10px; font-size:14px; color:#888 }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(390px,1fr)); gap:22px; padding:14px 40px 60px }
+  .card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.06); border:3px solid transparent; cursor:pointer; transition:transform .15s }
+  .card:hover { transform:translateY(-3px) }
+  .card.sel { border-color:#111 }
+  .thumb { width:100%; aspect-ratio:1200/630; overflow:hidden; position:relative; background:#eee }
+  .thumb iframe { width:1200px; height:630px; border:0; transform-origin:0 0; position:absolute; pointer-events:none }
+  .meta { display:flex; justify-content:space-between; align-items:center; padding:12px 16px }
+  .meta b { font-size:15px }
+  .meta small { color:#999 }
+  .meta .dl { font-size:13px; font-weight:800; color:#fff; background:#111; padding:8px 16px; border-radius:999px; text-decoration:none }
+</style>
+</head>
+<body>
+<header><h1>og-studio 🖼️</h1><span>貼網址 → 挑一張 OG 圖 → 下載 PNG(1200×630)</span></header>
+
+<div class="bar">
+  <input id="url" type="url" placeholder="https://classroo.tw/htmlcat2025/courses/…" value="https://classroo.tw">
+  <button id="go">抓取 OG 資料</button>
+</div>
+
+<div class="fields" id="fields">
+  <label>標題<input id="f-title"></label>
+  <label>站名<input id="f-site" style="width:150px"></label>
+  <label>描述<input id="f-desc" style="width:300px"></label>
+  <label>圖片網址<input id="f-image" style="width:260px"></label>
+  <label>Logo<input id="f-logo" style="width:200px"></label>
+  <label>主色<input id="f-color" type="color" value="#6d5ce7"></label>
+</div>
+
+<div id="status">先貼一個網址(你的課程頁、銷售頁都行),或直接改上面的欄位手動玩。</div>
+<div class="grid" id="grid"></div>
+
+<script src="/templates.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const F = ["title", "site", "desc", "image", "logo", "color"];
+  let data = { site: "og-studio", title: "貼個網址,馬上有九張 OG 圖", desc: "抓取你頁面的標題、描述、圖片,套進九種模板", image: "", logo: "", color: "#6d5ce7" };
+
+  const b64 = (obj) => encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(obj)))));
+
+  function renderGrid() {
+    const d = b64(data);
+    $("grid").innerHTML = OG_TEMPLATES.map((t) => `
+      <div class="card" data-t="${t.id}">
+        <div class="thumb"><iframe loading="lazy" src="/preview?t=${t.id}&d=${d}"></iframe></div>
+        <div class="meta">
+          <div><b>${t.name}</b> <small>${t.note}</small></div>
+          <a class="dl" href="/api/export?t=${t.id}&d=${d}">下載 PNG</a>
+        </div>
+      </div>`).join("");
+    scaleThumbs();
+    document.querySelectorAll(".card").forEach((c) =>
+      c.addEventListener("click", () => {
+        document.querySelectorAll(".card").forEach((x) => x.classList.remove("sel"));
+        c.classList.add("sel");
+      })
+    );
+  }
+
+  function scaleThumbs() {
+    document.querySelectorAll(".thumb").forEach((th) => {
+      const s = th.clientWidth / 1200;
+      th.querySelector("iframe").style.transform = `scale(${s})`;
+    });
+  }
+  addEventListener("resize", scaleThumbs);
+
+  function syncFields() {
+    F.forEach((k) => ($("f-" + k).value = data[k] || ""));
+    $("fields").style.display = "flex";
+  }
+  F.forEach((k) =>
+    $("f-" + k).addEventListener("change", () => {
+      data = { ...data, [k]: $("f-" + k).value };
+      renderGrid();
+    })
+  );
+
+  $("go").addEventListener("click", async () => {
+    const url = $("url").value.trim();
+    if (!url) return;
+    $("go").disabled = true;
+    $("status").textContent = "抓取中…";
+    try {
+      const res = await fetch("/api/og?url=" + encodeURIComponent(url));
+      const og = await res.json();
+      if (og.error) throw new Error(og.error);
+      data = og;
+      syncFields();
+      renderGrid();
+      $("status").textContent = `抓到:「${og.title}」— 點卡片選、改欄位微調、下載 PNG。`;
+    } catch (e) {
+      $("status").textContent = "抓取失敗:" + e.message + "(也可以直接手動填欄位)";
+      syncFields();
+    } finally {
+      $("go").disabled = false;
+    }
+  });
+
+  syncFields();
+  renderGrid();
+</script>
+</body>
+</html>

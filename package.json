@@ -1,0 +1,10 @@
+{
+  "name": "og-studio",
+  "version": "0.1.0",
+  "description": "OG 圖試衣間 — 貼網址抓 OG 資料,套九種模板挑一張,匯出 1200×630 PNG",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "playwright-core": "^1.50.0" },
+  "author": "Jeffrey0117",
+  "license": "MIT"
+}
