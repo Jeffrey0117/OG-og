@@ -1,4 +1,4 @@
-// og-studio — 貼網址 → 抓 OG 資料 → 套九種模板挑一張 → 匯出 1200×630 PNG
+// OG-og — 貼網址 → 抓 OG 資料 → 套九種模板挑一張 → 匯出 1200×630 PNG
 // 零依賴 http server;截圖引擎用 playwright-core 驅動系統 Edge/Chrome(不下載瀏覽器)。
 const http = require("http");
 const fs = require("fs");
@@ -107,7 +107,7 @@ http.createServer(async (req, res) => {
     }
     res.writeHead(404); res.end("not found");
   } catch (e) {
-    console.error(`[og-studio] ${url.pathname} 失敗:`, e.message);
+    console.error(`[OG-og] ${url.pathname} 失敗:`, e.message);
     res.writeHead(500, { "content-type": "application/json; charset=utf-8" });
     res.end(JSON.stringify({ error: e.message }));
   }

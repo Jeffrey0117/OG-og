@@ -1,5 +1,5 @@
 {
-  "name": "og-studio",
+  "name": "og-og",
   "version": "0.1.0",
   "description": "OG 圖試衣間 — 貼網址抓 OG 資料,套九種模板挑一張,匯出 1200×630 PNG",
   "main": "server.js",
