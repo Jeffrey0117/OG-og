@@ -7,89 +7,147 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   * { margin:0; padding:0; box-sizing:border-box }
-  body { font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; background:#f4f4f0; color:#1a1a1a }
-  .layout { display:flex; min-height:100vh; align-items:stretch }
+  body { font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; background:#f6f7f9; color:#171a20 }
+  button { font-family:inherit }
 
-  /* 左:九宮格全展開 */
-  main { flex:1; min-width:0; padding:36px 56px 72px }
-  main h1 { font-size:24px; font-weight:900; display:flex; align-items:baseline; gap:12px }
-  main h1 small { font-size:13px; color:#999; font-weight:600 }
-  #status { padding:10px 0 20px; font-size:14px; color:#888 }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:26px }
-  .card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.06); border:3px solid transparent; cursor:pointer; transition:transform .15s }
-  .card:hover { transform:translateY(-3px) }
-  .card.sel { border-color:#111 }
-  .thumb { width:100%; aspect-ratio:1200/630; overflow:hidden; position:relative; background:#eee }
-  .thumb iframe { width:1200px; height:630px; border:0; transform-origin:0 0; position:absolute; pointer-events:none }
-  .meta { display:flex; justify-content:space-between; align-items:center; padding:11px 15px }
-  .meta b { font-size:15px }
-  .meta small { color:#999 }
-  .meta .dl { font-size:13px; font-weight:800; color:#fff; background:#111; padding:8px 16px; border-radius:999px; text-decoration:none; white-space:nowrap }
+  /* ── navbar ── */
+  nav { background:#fff; border-bottom:1px solid #e9eaee; padding:0 36px; height:62px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10 }
+  .brand { display:flex; align-items:center; gap:10px; font-size:20px; font-weight:900 }
+  .brand img { width:30px; height:30px }
+  nav .right a { font-size:14px; font-weight:700; color:#555; text-decoration:none; border:1.5px solid #e0e1e6; padding:8px 18px; border-radius:999px }
+  nav .right a:hover { border-color:#171a20; color:#171a20 }
 
-  /* 右:編輯面板 */
-  aside { width:400px; flex-shrink:0; background:#fff; border-left:1px solid #e8e8e4; padding:30px 34px 48px; position:sticky; top:0; height:100vh; overflow-y:auto }
-  aside h2 { font-size:17px; font-weight:900; display:flex; justify-content:space-between; align-items:center; margin-bottom:18px }
-  aside h2 button { font-size:12px; font-weight:700; color:#888; background:none; border:0; cursor:pointer }
-  .fetch { display:flex; gap:8px; margin-bottom:22px }
-  .fetch input { flex:1; min-width:0; font-size:14px; padding:11px 13px; border:2px solid #ddd; border-radius:10px; outline:none }
-  .fetch input:focus { border-color:#111 }
-  .fetch button { font-size:14px; font-weight:800; padding:0 18px; border:0; border-radius:10px; background:#111; color:#fff; cursor:pointer; white-space:nowrap }
-  .fetch button:disabled { opacity:.5; cursor:wait }
-  .field { margin-bottom:16px }
-  .field > span { display:block; font-size:13px; font-weight:800; color:#333; margin-bottom:6px }
-  .field input[type=text], .field textarea, .field select { width:100%; font-size:14px; padding:10px 12px; border:1.5px solid #ddd; border-radius:9px; outline:none; font-family:inherit; background:#fff }
-  .field textarea { resize:vertical; min-height:64px; line-height:1.5 }
-  .field input:focus, .field textarea:focus { border-color:#111 }
+  .layout { display:flex; align-items:flex-start; gap:0 }
+
+  /* ── 左半 ── */
+  main { flex:1; min-width:0; padding:30px 40px 80px 44px }
+  .scanbar { display:flex; gap:10px; max-width:760px }
+  .scanbar input { flex:1; min-width:0; font-size:15px; padding:13px 18px; border:2px solid #e0e1e6; border-radius:12px; outline:none; background:#fff }
+  .scanbar input:focus { border-color:#171a20 }
+  .scanbar button { font-size:15px; font-weight:800; padding:0 26px; border:0; border-radius:12px; background:#171a20; color:#fff; cursor:pointer }
+  .scanbar button:disabled { opacity:.5; cursor:wait }
+  #status { padding:10px 2px 20px; font-size:13.5px; color:#8a8f98 }
+
+  /* 大預覽卡 */
+  .previewCard { background:#fff; border-radius:18px; box-shadow:0 1px 3px rgba(16,24,40,.07), 0 8px 28px rgba(16,24,40,.05); overflow:hidden }
+  .tabs { display:flex; align-items:center; gap:6px; padding:10px 22px 0; border-bottom:1px solid #eef0f3 }
+  .tab { display:flex; align-items:center; justify-content:center; width:52px; height:44px; cursor:pointer; border-bottom:2.5px solid transparent; color:#9aa0a9 }
+  .tab:hover { color:#171a20 }
+  .tab.on { color:#171a20; border-bottom-color:#171a20 }
+  .tab svg { width:19px; height:19px; fill:currentColor }
+  .stage { padding:42px 48px 46px; display:flex; justify-content:center; background:#fff }
+  .stageInner { width:min(660px, 100%) }
+  .shot { width:100%; aspect-ratio:1200/630; overflow:hidden; position:relative; background:#f0f1f4 }
+  .shot iframe { width:1200px; height:630px; border:0; position:absolute; transform-origin:0 0; pointer-events:none }
+  /* facebook */
+  .chrome-fb { border:1px solid #dddfe2; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,.08) }
+  .chrome-fb .bar { background:#f0f2f5; padding:12px 16px }
+  .chrome-fb .dom { font-size:12px; color:#606770; letter-spacing:.4px; text-transform:uppercase }
+  .chrome-fb .t { font-size:16.5px; font-weight:700; color:#1c1e21; margin-top:3px }
+  /* x/twitter */
+  .chrome-x { border-radius:16px; overflow:hidden; position:relative; border:1px solid #e1e8ed }
+  .chrome-x .pill { position:absolute; left:12px; bottom:12px; background:rgba(0,0,0,.75); color:#fff; font-size:13px; padding:3px 10px; border-radius:6px; max-width:80%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .chrome-x .dom { font-size:13.5px; color:#8b98a5; padding:8px 4px 0 }
+  /* linkedin */
+  .chrome-li { border:1px solid #e0e1e6; border-radius:4px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08) }
+  .chrome-li .bar { background:#fff; padding:12px 16px; border-top:1px solid #eee }
+  .chrome-li .t { font-size:15.5px; font-weight:700; color:#1d2226 }
+  .chrome-li .dom { font-size:12.5px; color:#7a8087; margin-top:4px }
+  /* discord */
+  .chrome-dc { background:#2b2d31; border-radius:10px; padding:16px 18px; border-left:4px solid #5865f2 }
+  .chrome-dc .site { font-size:12px; color:#b5bac1 }
+  .chrome-dc .t { font-size:16px; font-weight:700; color:#00a8fc; margin:5px 0 4px }
+  .chrome-dc .d { font-size:13.5px; color:#dbdee1; line-height:1.5; margin-bottom:12px }
+  .chrome-dc .shot { border-radius:8px }
+
+  /* 模板九宮格 */
+  .pick { display:flex; align-items:baseline; justify-content:space-between; margin:34px 2px 16px }
+  .pick h2 { font-size:15px; font-weight:900; letter-spacing:1px; color:#5c626b }
+  .pick span { font-size:13px; color:#9aa0a9 }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:22px }
+  .card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 1px 3px rgba(16,24,40,.08); outline:2.5px solid transparent; outline-offset:-2.5px; cursor:pointer; transition:transform .15s, box-shadow .15s; position:relative }
+  .card:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(16,24,40,.12) }
+  .card.sel { outline-color:#171a20 }
+  .card.sel::after { content:"✓ 使用中"; position:absolute; top:10px; right:10px; background:#171a20; color:#fff; font-size:11.5px; font-weight:800; padding:5px 11px; border-radius:999px }
+  .card .meta { display:flex; justify-content:space-between; align-items:center; padding:11px 15px }
+  .card .meta b { font-size:14px }
+  .card .meta small { color:#9aa0a9; font-size:12px }
+  .card .dl { font-size:12.5px; font-weight:800; color:#171a20; background:#f0f1f4; padding:7px 14px; border-radius:999px; text-decoration:none; white-space:nowrap }
+  .card .dl:hover { background:#171a20; color:#fff }
+
+  /* ── 右編輯面板 ── */
+  aside { width:380px; flex-shrink:0; background:#fff; border-left:1px solid #e9eaee; padding:26px 30px 60px; position:sticky; top:62px; height:calc(100vh - 62px); overflow-y:auto }
+  aside h2 { font-size:16px; font-weight:900; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
+  aside h2 button { font-size:12.5px; font-weight:700; color:#8a8f98; background:none; border:0; cursor:pointer }
+  aside h2 button:hover { color:#171a20 }
+  .field { margin-bottom:17px }
+  .field > span { display:block; font-size:13px; font-weight:800; color:#3f434a; margin-bottom:7px }
+  .field input[type=text], .field textarea, .field select { width:100%; font-size:14px; padding:10px 13px; border:1.5px solid #e0e1e6; border-radius:10px; outline:none; font-family:inherit; background:#fff; color:#171a20 }
+  .field textarea { resize:vertical; min-height:66px; line-height:1.55 }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color:#171a20 }
   .imgrow { display:flex; gap:8px; align-items:center }
-  .imgrow img { width:40px; height:40px; border-radius:8px; object-fit:cover; border:1px solid #eee; background:#f4f4f0; flex-shrink:0 }
+  .imgrow .pv { width:42px; height:42px; border-radius:9px; border:1.5px solid #e0e1e6; background:#f6f7f9 center/cover no-repeat; flex-shrink:0 }
   .imgrow input { flex:1; min-width:0 }
-  .duo { display:flex; gap:10px }
-  .duo .field { flex:1 }
-  .colorrow { display:flex; align-items:center; gap:10px }
-  .colorrow input[type=color] { width:46px; height:36px; border:1.5px solid #ddd; border-radius:9px; padding:2px; cursor:pointer; background:#fff }
-  .colorrow code { font-size:13px; color:#888 }
+  .colorrow { display:flex; align-items:center; gap:12px }
+  .colorrow input[type=color] { width:48px; height:38px; border:1.5px solid #e0e1e6; border-radius:10px; padding:2px; cursor:pointer; background:#fff }
+  .colorrow code { font-size:13px; color:#8a8f98 }
+  .bigdl { display:block; text-align:center; margin-top:26px; background:#171a20; color:#fff; font-size:15px; font-weight:800; padding:14px; border-radius:12px; text-decoration:none }
+  .bigdl:hover { opacity:.88 }
 
-  @media (max-width: 900px) { .layout { flex-direction:column-reverse } aside { width:auto; position:static; height:auto } }
+  @media (max-width: 980px) { .layout { flex-direction:column-reverse } aside { width:auto; position:static; height:auto } }
 </style>
 </head>
 <body>
+
+<nav>
+  <div class="brand"><img src="/favicon.svg" alt="">OG-og</div>
+  <div class="right"><a href="https://github.com/Jeffrey0117/OG-og" target="_blank">GitHub</a></div>
+</nav>
+
 <div class="layout">
 
   <main>
-    <h1>OG-og 🖼️ <small>九種模板全展開 — 點卡片選、右邊改內容、下載 PNG(1200×630)</small></h1>
-    <div id="status">貼一個網址(課程頁、銷售頁都行),或直接改右邊欄位手動玩。</div>
+    <div class="scanbar">
+      <input id="url" type="url" placeholder="https://classroo.tw/…(課程頁、銷售頁都行)" value="https://classroo.tw">
+      <button id="go">掃描</button>
+    </div>
+    <div id="status">貼網址掃描,或直接改右邊欄位。下面大圖是「分享出去長怎樣」的實況模擬。</div>
+
+    <section class="previewCard">
+      <div class="tabs" id="tabs"></div>
+      <div class="stage"><div class="stageInner" id="stage"></div></div>
+    </section>
+
+    <div class="pick"><h2>選擇模板(點卡片套用)</h2><span id="pickCount"></span></div>
     <div class="grid" id="grid"></div>
   </main>
 
   <aside>
     <h2>編輯內容 <button id="reset">↺ 重設</button></h2>
 
-    <div class="fetch">
-      <input id="url" type="url" placeholder="https://classroo.tw/…" value="https://classroo.tw">
-      <button id="go">抓取</button>
-    </div>
-
     <div class="field"><span>標題</span><textarea id="f-title" rows="2"></textarea></div>
     <div class="field"><span>描述</span><textarea id="f-desc" rows="3"></textarea></div>
     <div class="field"><span>站名</span><input id="f-site" type="text"></div>
 
     <div class="field"><span>圖片網址</span>
-      <div class="imgrow"><img id="p-image" alt=""><input id="f-image" type="text"></div>
+      <div class="imgrow"><div class="pv" id="p-image"></div><input id="f-image" type="text"></div>
     </div>
     <div class="field"><span>圖片裁切</span>
       <select id="f-imageFit"><option value="cover">Cover(裁滿,預設)</option><option value="contain">Contain(完整露出)</option></select>
     </div>
 
     <div class="field"><span>Logo 網址</span>
-      <div class="imgrow"><img id="p-logo" alt=""><input id="f-logo" type="text"></div>
+      <div class="imgrow"><div class="pv" id="p-logo"></div><input id="f-logo" type="text"></div>
     </div>
     <div class="field"><span>Logo 裁切</span>
-      <select id="f-logoFit"><option value="cover">Cover(裁滿,預設)</option><option value="contain">Contain(完整露出)</option></select>
+      <select id="f-logoFit"><option value="cover">Cover(裁滿)</option><option value="contain" selected>Contain(完整露出)</option></select>
     </div>
 
     <div class="field"><span>主色</span>
       <div class="colorrow"><input id="f-color" type="color" value="#6d5ce7"><code id="colorhex">#6d5ce7</code></div>
     </div>
+
+    <a class="bigdl" id="bigdl" href="#">⬇ 下載目前這張 PNG(1200×630)</a>
   </aside>
 
 </div>
@@ -98,80 +156,120 @@
 <script>
   const $ = (id) => document.getElementById(id);
   const F = ["title", "desc", "site", "image", "imageFit", "logo", "logoFit", "color"];
-  const DEFAULTS = { site: "OG-og", title: "貼個網址,馬上有九張 OG 圖", desc: "抓取你頁面的標題、描述、圖片,套進九種模板", image: "", imageFit: "cover", logo: "", logoFit: "cover", color: "#6d5ce7" };
+  const DEFAULTS = { site: "OG-og", title: "貼個網址,馬上有十張 OG 圖", desc: "抓取你頁面的標題、描述、圖片,套進十種模板,挑一張下載", image: "", imageFit: "cover", logo: "", logoFit: "contain", color: "#6d5ce7", domain: "og-og.local" };
   let data = { ...DEFAULTS };
+  let selTemplate = OG_TEMPLATES[0].id;
+  let platform = "fb";
 
   const b64 = (obj) => encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(obj)))));
+  const escT = (s) => String(s).replace(/</g, "&lt;");
+
+  const PLATFORMS = [
+    { id: "fb", svg: '<svg viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.09 24 18.1 24 12.07z"/></svg>' },
+    { id: "x", svg: '<svg viewBox="0 0 24 24"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41z"/></svg>' },
+    { id: "li", svg: '<svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.2 0 22.22 0z"/></svg>' },
+    { id: "dc", svg: '<svg viewBox="0 0 24 24"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.89-1.52.07.07 0 0 0-.08.04c-.21.38-.44.87-.6 1.25a18.3 18.3 0 0 0-5.5 0 12.6 12.6 0 0 0-.61-1.25.08.08 0 0 0-.08-.04 19.7 19.7 0 0 0-4.88 1.52.07.07 0 0 0-.03.03C.53 9.05-.32 13.58.1 18.06c0 .02.01.04.03.05a19.9 19.9 0 0 0 6 3.03.08.08 0 0 0 .08-.03c.46-.63.87-1.3 1.22-2a.08.08 0 0 0-.04-.11 13.1 13.1 0 0 1-1.87-.9.08.08 0 0 1 0-.12c.12-.1.25-.2.37-.3a.07.07 0 0 1 .08 0 14.2 14.2 0 0 0 12.06 0 .07.07 0 0 1 .08 0c.12.11.24.21.37.3a.08.08 0 0 1 0 .13c-.6.35-1.22.64-1.87.89a.08.08 0 0 0-.04.11c.36.7.77 1.37 1.22 2a.08.08 0 0 0 .08.03 19.8 19.8 0 0 0 6.02-3.03.08.08 0 0 0 .03-.05c.5-5.18-.84-9.68-3.55-13.66a.06.06 0 0 0-.03-.03zM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42 0-1.33.96-2.42 2.16-2.42 1.21 0 2.18 1.1 2.16 2.42 0 1.34-.96 2.42-2.16 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.22 0 2.18 1.1 2.16 2.42 0 1.34-.94 2.42-2.16 2.42z"/></svg>' },
+  ];
+
+  function shotHtml() {
+    return `<div class="shot"><iframe src="/preview?t=${selTemplate}&d=${b64(data)}"></iframe></div>`;
+  }
+
+  function renderStage() {
+    const dom = (data.domain || "").toUpperCase();
+    const chrome = {
+      fb: `<div class="chrome-fb">${shotHtml()}<div class="bar"><div class="dom">${escT(dom)}</div><div class="t">${escT(data.title)}</div></div></div>`,
+      x: `<div><div class="chrome-x">${shotHtml()}<div class="pill">${escT(data.title)}</div></div><div class="dom" style="font-size:13px;color:#8b98a5;padding:7px 4px 0">來自 ${escT(data.domain || "")}</div></div>`,
+      li: `<div class="chrome-li">${shotHtml()}<div class="bar"><div class="t">${escT(data.title)}</div><div class="dom">${escT(data.domain || "")}</div></div></div>`,
+      dc: `<div class="chrome-dc"><div class="site">${escT(data.site)}</div><div class="t">${escT(data.title)}</div><div class="d">${escT(data.desc)}</div>${shotHtml()}</div>`,
+    }[platform];
+    $("stage").innerHTML = chrome;
+    scaleShots($("stage"));
+    $("bigdl").href = `/api/export?t=${selTemplate}&d=${b64(data)}`;
+  }
+
+  function renderTabs() {
+    $("tabs").innerHTML = PLATFORMS.map((p) => `<div class="tab${p.id === platform ? " on" : ""}" data-p="${p.id}">${p.svg}</div>`).join("");
+    document.querySelectorAll(".tab").forEach((t) =>
+      t.addEventListener("click", () => { platform = t.dataset.p; renderTabs(); renderStage(); })
+    );
+  }
 
   function renderGrid() {
     const d = b64(data);
-    const sel = document.querySelector(".card.sel")?.dataset.t;
     $("grid").innerHTML = OG_TEMPLATES.map((t) => `
-      <div class="card${t.id === sel ? " sel" : ""}" data-t="${t.id}">
-        <div class="thumb"><iframe loading="lazy" src="/preview?t=${t.id}&d=${d}"></iframe></div>
+      <div class="card${t.id === selTemplate ? " sel" : ""}" data-t="${t.id}">
+        <div class="shot"><iframe loading="lazy" src="/preview?t=${t.id}&d=${d}"></iframe></div>
         <div class="meta">
-          <div><b>${t.name}</b> <small>${t.note}</small></div>
-          <a class="dl" href="/api/export?t=${t.id}&d=${d}">下載 PNG</a>
+          <div><b>${t.name}</b><br><small>${t.note}</small></div>
+          <a class="dl" href="/api/export?t=${t.id}&d=${d}" onclick="event.stopPropagation()">下載</a>
         </div>
       </div>`).join("");
-    scaleThumbs();
+    $("pickCount").textContent = `${OG_TEMPLATES.findIndex((t) => t.id === selTemplate) + 1} / ${OG_TEMPLATES.length}`;
+    scaleShots($("grid"));
     document.querySelectorAll(".card").forEach((c) =>
       c.addEventListener("click", () => {
-        document.querySelectorAll(".card").forEach((x) => x.classList.remove("sel"));
-        c.classList.add("sel");
+        selTemplate = c.dataset.t;
+        document.querySelectorAll(".card").forEach((x) => x.classList.toggle("sel", x.dataset.t === selTemplate));
+        $("pickCount").textContent = `${OG_TEMPLATES.findIndex((t) => t.id === selTemplate) + 1} / ${OG_TEMPLATES.length}`;
+        renderStage();
       })
     );
   }
 
-  function scaleThumbs() {
-    document.querySelectorAll(".thumb").forEach((th) => {
-      const s = th.clientWidth / 1200;
-      th.querySelector("iframe").style.transform = `scale(${s})`;
+  function scaleShots(root) {
+    root.querySelectorAll(".shot").forEach((sh) => {
+      const f = sh.querySelector("iframe");
+      requestAnimationFrame(() => { f.style.transform = `scale(${sh.clientWidth / 1200})`; });
     });
   }
-  addEventListener("resize", scaleThumbs);
+  addEventListener("resize", () => { scaleShots(document.body); });
 
   function syncFields() {
     F.forEach((k) => ($("f-" + k).value = data[k] || ""));
-    $("p-image").src = data.image || "";
-    $("p-logo").src = data.logo || "";
+    $("p-image").style.backgroundImage = data.image ? `url("${data.image}")` : "none";
+    $("p-logo").style.backgroundImage = data.logo ? `url("${data.logo}")` : "none";
     $("colorhex").textContent = data.color;
   }
 
-  // 打字即時重渲染(輕 debounce,不用等失焦)
   let timer;
   F.forEach((k) =>
     $("f-" + k).addEventListener("input", () => {
       data = { ...data, [k]: $("f-" + k).value };
       $("colorhex").textContent = data.color;
       clearTimeout(timer);
-      timer = setTimeout(() => { $("p-image").src = data.image || ""; $("p-logo").src = data.logo || ""; renderGrid(); }, 350);
+      timer = setTimeout(() => { syncFields(); renderStage(); renderGrid(); }, 400);
     })
   );
 
-  $("reset").addEventListener("click", () => { data = { ...DEFAULTS }; syncFields(); renderGrid(); });
+  $("reset").addEventListener("click", () => { data = { ...DEFAULTS }; syncFields(); renderStage(); renderGrid(); });
 
-  $("go").addEventListener("click", async () => {
+  $("go").addEventListener("click", scan);
+  $("url").addEventListener("keydown", (e) => { if (e.key === "Enter") scan(); });
+  async function scan() {
     const url = $("url").value.trim();
     if (!url) return;
     $("go").disabled = true;
-    $("status").textContent = "抓取中…";
+    $("status").textContent = "掃描中…";
     try {
       const res = await fetch("/api/og?url=" + encodeURIComponent(url));
       const og = await res.json();
       if (og.error) throw new Error(og.error);
-      data = { ...DEFAULTS, ...og };
+      data = { ...DEFAULTS, ...og, domain: new URL(url).hostname };
       syncFields();
+      renderStage();
       renderGrid();
-      $("status").textContent = `抓到:「${og.title}」— 點卡片選、右邊微調、下載 PNG。`;
+      $("status").textContent = `抓到:「${og.title}」— 上面是分享實況,點下面卡片換模板。`;
     } catch (e) {
-      $("status").textContent = "抓取失敗:" + e.message + "(也可以直接手動填右邊欄位)";
+      $("status").textContent = "掃描失敗:" + e.message + "(可直接手動填右邊欄位)";
     } finally {
       $("go").disabled = false;
     }
-  });
+  }
 
+  renderTabs();
   syncFields();
+  renderStage();
   renderGrid();
 </script>
 </body>

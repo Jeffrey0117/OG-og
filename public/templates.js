@@ -70,6 +70,24 @@ const TEMPLATES = [
       </div>`,
   },
   {
+    id: "panel",
+    name: "疊卡海報",
+    note: "圖當底+深色資訊卡,最有產品感",
+    render: (d) => `
+      <div style="width:1200px;height:630px;font-family:${FONT};position:relative;overflow:hidden;background:#f4c81b">
+        ${d.image ? `<img src="${esc(d.image)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:${d.imageFit||"cover"}">` : ""}
+        <span style="position:absolute;top:34px;right:44px;background:#fff;color:#1a1a1a;font-size:20px;font-weight:800;padding:9px 22px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.18)">${esc(d.site)}</span>
+        <div style="position:absolute;left:52px;top:70px;width:520px;background:#3b3663f2;border-radius:26px;padding:44px 46px;display:flex;flex-direction:column;gap:22px;box-shadow:0 30px 70px rgba(0,0,0,.35)">
+          <div style="display:flex;align-items:center;gap:12px">${logoImg(d, 40)}</div>
+          <div style="font-size:40px;font-weight:900;line-height:1.35;color:#fff">${esc(clamp(d.title, 34))}</div>
+          <div style="font-size:17px;color:#ffffffb0;line-height:1.6">${esc(clamp(d.desc, 64))}</div>
+          <span style="align-self:flex-start;background:#ff5e6c;color:#fff;font-size:20px;font-weight:800;padding:12px 30px;border-radius:999px">立即加入</span>
+        </div>
+        <div style="position:absolute;width:64px;height:64px;border-radius:50%;background:#2fbf9b;left:590px;bottom:150px"></div>
+        <div style="position:absolute;width:28px;height:28px;border-radius:50%;background:#ff8a7a;right:220px;top:60px"></div>
+      </div>`,
+  },
+  {
     id: "cover",
     name: "滿版大圖",
     note: "og 圖當底,字壓上去",
