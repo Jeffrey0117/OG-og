@@ -7,21 +7,20 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   * { margin:0; padding:0; box-sizing:border-box }
-  body { font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; background:#f6f7f9; color:#171a20 }
+  body { font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif; background:linear-gradient(180deg,#eef1f6,#f6f7f9 320px); color:#171a20 }
   button { font-family:inherit }
 
   /* ── navbar ── */
-  nav { background:#fff; border-bottom:1px solid #e9eaee; padding:0 clamp(36px, 5vw, 90px); height:62px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10 }
+  nav { background:#fff; border-bottom:1px solid #e9eaee; padding:0 clamp(48px, 6vw, 110px); height:62px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10 }
   .brand { display:flex; align-items:center; gap:10px; font-size:20px; font-weight:900 }
   .brand img { width:30px; height:30px }
   nav .right a { font-size:14px; font-weight:700; color:#555; text-decoration:none; border:1.5px solid #e0e1e6; padding:8px 18px; border-radius:999px }
   nav .right a:hover { border-color:#171a20; color:#171a20 }
 
-  .layout { display:flex; align-items:flex-start; gap:0 }
+  .layout { display:flex; align-items:flex-start; gap:clamp(28px, 3vw, 56px); padding:0 clamp(56px, 8vw, 170px) 0 clamp(56px, 8vw, 170px) }
 
   /* ── 左半 ── */
-  /* 左右留白給到超大:大螢幕 ~120px,窄了才縮 */
-  main { flex:1; min-width:0; padding:38px clamp(36px, 7vw, 130px) 90px }
+  main { flex:1; min-width:0; padding:38px 0 90px }
   .scanbar { display:flex; gap:10px; max-width:760px }
   .scanbar input { flex:1; min-width:0; font-size:15px; padding:13px 18px; border:2px solid #e0e1e6; border-radius:12px; outline:none; background:#fff }
   .scanbar input:focus { border-color:#171a20 }
@@ -40,32 +39,27 @@
   .stageInner { width:min(660px, 100%) }
   .shot { width:100%; aspect-ratio:1200/630; overflow:hidden; position:relative; background:#f0f1f4 }
   .shot iframe { width:1200px; height:630px; border:0; position:absolute; transform-origin:0 0; pointer-events:none }
-  /* facebook */
   .chrome-fb { border:1px solid #dddfe2; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,.08) }
   .chrome-fb .bar { background:#f0f2f5; padding:12px 16px }
   .chrome-fb .dom { font-size:12px; color:#606770; letter-spacing:.4px; text-transform:uppercase }
   .chrome-fb .t { font-size:16.5px; font-weight:700; color:#1c1e21; margin-top:3px }
-  /* x/twitter */
   .chrome-x { border-radius:16px; overflow:hidden; position:relative; border:1px solid #e1e8ed }
   .chrome-x .pill { position:absolute; left:12px; bottom:12px; background:rgba(0,0,0,.75); color:#fff; font-size:13px; padding:3px 10px; border-radius:6px; max-width:80%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-  .chrome-x .dom { font-size:13.5px; color:#8b98a5; padding:8px 4px 0 }
-  /* linkedin */
   .chrome-li { border:1px solid #e0e1e6; border-radius:4px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08) }
   .chrome-li .bar { background:#fff; padding:12px 16px; border-top:1px solid #eee }
   .chrome-li .t { font-size:15.5px; font-weight:700; color:#1d2226 }
   .chrome-li .dom { font-size:12.5px; color:#7a8087; margin-top:4px }
-  /* discord */
   .chrome-dc { background:#2b2d31; border-radius:10px; padding:16px 18px; border-left:4px solid #5865f2 }
   .chrome-dc .site { font-size:12px; color:#b5bac1 }
   .chrome-dc .t { font-size:16px; font-weight:700; color:#00a8fc; margin:5px 0 4px }
   .chrome-dc .d { font-size:13.5px; color:#dbdee1; line-height:1.5; margin-bottom:12px }
   .chrome-dc .shot { border-radius:8px }
 
-  /* 模板九宮格 */
+  /* 模板格 */
   .pick { display:flex; align-items:baseline; justify-content:space-between; margin:34px 2px 16px }
   .pick h2 { font-size:15px; font-weight:900; letter-spacing:1px; color:#5c626b }
   .pick span { font-size:13px; color:#9aa0a9 }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:22px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:22px }
   .card { background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 1px 3px rgba(16,24,40,.08); outline:2.5px solid transparent; outline-offset:-2.5px; cursor:pointer; transition:transform .15s, box-shadow .15s; position:relative }
   .card:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(16,24,40,.12) }
   .card.sel { outline-color:#171a20 }
@@ -76,26 +70,47 @@
   .card .dl { font-size:12.5px; font-weight:800; color:#171a20; background:#f0f1f4; padding:7px 14px; border-radius:999px; text-decoration:none; white-space:nowrap }
   .card .dl:hover { background:#171a20; color:#fff }
 
-  /* ── 右編輯面板 ── */
-  aside { width:420px; flex-shrink:0; background:#fff; border-left:1px solid #e9eaee; padding:30px 42px 70px; position:sticky; top:62px; height:calc(100vh - 62px); overflow-y:auto }
-  aside h2 { font-size:16px; font-weight:900; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px }
-  aside h2 button { font-size:12.5px; font-weight:700; color:#8a8f98; background:none; border:0; cursor:pointer }
-  aside h2 button:hover { color:#171a20 }
-  .field { margin-bottom:17px }
-  .field > span { display:block; font-size:13px; font-weight:800; color:#3f434a; margin-bottom:7px }
-  .field input[type=text], .field textarea, .field select { width:100%; font-size:14px; padding:10px 13px; border:1.5px solid #e0e1e6; border-radius:10px; outline:none; font-family:inherit; background:#fff; color:#171a20 }
-  .field textarea { resize:vertical; min-height:66px; line-height:1.55 }
+  /* ── 右:懸浮小面板(不貼邊、卡片式)── */
+  .side { width:372px; flex-shrink:0; padding:38px 0 70px; position:sticky; top:62px; max-height:calc(100vh - 62px); overflow-y:auto; display:flex; flex-direction:column; gap:18px }
+  .panel { background:#fff; border:1px solid #e9eaee; border-radius:16px; box-shadow:0 1px 3px rgba(16,24,40,.06), 0 10px 34px rgba(16,24,40,.06); padding:18px 20px }
+  .panel h2 { font-size:15px; font-weight:900; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px }
+  .panel h2 button { font-size:12px; font-weight:700; color:#8a8f98; background:none; border:0; cursor:pointer }
+  .panel h2 button:hover { color:#171a20 }
+  .field { margin-bottom:12px }
+  .field > span { display:block; font-size:12.5px; font-weight:800; color:#3f434a; margin-bottom:5px }
+  .field input[type=text], .field textarea, .field select { width:100%; font-size:13.5px; padding:9px 12px; border:1.5px solid #e0e1e6; border-radius:9px; outline:none; font-family:inherit; background:#fff; color:#171a20 }
+  .field textarea { resize:vertical; min-height:58px; line-height:1.5 }
   .field input:focus, .field textarea:focus, .field select:focus { border-color:#171a20 }
   .imgrow { display:flex; gap:8px; align-items:center }
-  .imgrow .pv { width:42px; height:42px; border-radius:9px; border:1.5px solid #e0e1e6; background:#f6f7f9 center/cover no-repeat; flex-shrink:0 }
+  .imgrow .pv { width:38px; height:38px; border-radius:8px; border:1.5px solid #e0e1e6; background:#f6f7f9 center/cover no-repeat; flex-shrink:0 }
   .imgrow input { flex:1; min-width:0 }
-  .colorrow { display:flex; align-items:center; gap:12px }
-  .colorrow input[type=color] { width:48px; height:38px; border:1.5px solid #e0e1e6; border-radius:10px; padding:2px; cursor:pointer; background:#fff }
-  .colorrow code { font-size:13px; color:#8a8f98 }
-  .bigdl { display:block; text-align:center; margin-top:26px; background:#171a20; color:#fff; font-size:15px; font-weight:800; padding:14px; border-radius:12px; text-decoration:none }
+  .duo { display:flex; gap:10px }
+  .duo .field { flex:1 }
+  .colorrow { display:flex; align-items:center; gap:10px }
+  .colorrow input[type=color] { width:44px; height:34px; border:1.5px solid #e0e1e6; border-radius:9px; padding:2px; cursor:pointer; background:#fff }
+  .colorrow code { font-size:12.5px; color:#8a8f98 }
+  .bigdl { display:block; text-align:center; margin-top:14px; background:#171a20; color:#fff; font-size:14px; font-weight:800; padding:12px; border-radius:11px; text-decoration:none }
   .bigdl:hover { opacity:.88 }
 
-  @media (max-width: 980px) { .layout { flex-direction:column-reverse } aside { width:auto; position:static; height:auto } }
+  /* Meta 檢查器 */
+  .badges { display:flex; gap:6px }
+  .bdg { font-size:11.5px; font-weight:800; padding:3px 9px; border-radius:999px; display:flex; align-items:center; gap:4px }
+  .bdg.err { background:#fee4e2; color:#d92d20 }
+  .bdg.warn { background:#fef0c7; color:#b54708 }
+  .bdg.ok { background:#d1fadf; color:#067647 }
+  .insp-item { display:flex; gap:11px; padding:11px 0; border-top:1px solid #f0f1f4; align-items:flex-start }
+  .insp-item:first-of-type { border-top:0 }
+  .ic { width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; margin-top:1px }
+  .ic.err { background:#fee4e2; color:#d92d20 }
+  .ic.warn { background:#fef0c7; color:#b54708 }
+  .ic.ok { background:#d1fadf; color:#067647 }
+  .insp-item .tt { font-size:13.5px; font-weight:800; display:flex; justify-content:space-between; gap:8px }
+  .insp-item .tt code { font-size:11px; color:#9aa0a9; font-weight:400 }
+  .insp-item .dd { font-size:12.5px; color:#6b7078; line-height:1.55; margin-top:3px }
+  .insp-item > div:last-child { flex:1; min-width:0 }
+  .insp-item > .ic { flex:0 0 22px }
+
+  @media (max-width: 1080px) { .layout { flex-direction:column-reverse; padding:0 24px } .side { width:auto; position:static; max-height:none } }
 </style>
 </head>
 <body>
@@ -123,33 +138,40 @@
     <div class="grid" id="grid"></div>
   </main>
 
-  <aside>
-    <h2>編輯內容 <button id="reset">↺ 重設</button></h2>
+  <div class="side">
+    <section class="panel">
+      <h2>編輯內容 <button id="reset">↺ 重設</button></h2>
 
-    <div class="field"><span>標題</span><textarea id="f-title" rows="2"></textarea></div>
-    <div class="field"><span>描述</span><textarea id="f-desc" rows="3"></textarea></div>
-    <div class="field"><span>站名</span><input id="f-site" type="text"></div>
+      <div class="field"><span>標題</span><textarea id="f-title" rows="2"></textarea></div>
+      <div class="field"><span>描述</span><textarea id="f-desc" rows="3"></textarea></div>
+      <div class="field"><span>站名</span><input id="f-site" type="text"></div>
 
-    <div class="field"><span>圖片網址</span>
-      <div class="imgrow"><div class="pv" id="p-image"></div><input id="f-image" type="text"></div>
-    </div>
-    <div class="field"><span>圖片裁切</span>
-      <select id="f-imageFit"><option value="cover">Cover(裁滿,預設)</option><option value="contain">Contain(完整露出)</option></select>
-    </div>
+      <div class="field"><span>圖片網址</span>
+        <div class="imgrow"><div class="pv" id="p-image"></div><input id="f-image" type="text"></div>
+      </div>
+      <div class="field"><span>Logo 網址</span>
+        <div class="imgrow"><div class="pv" id="p-logo"></div><input id="f-logo" type="text"></div>
+      </div>
+      <div class="duo">
+        <div class="field"><span>圖片裁切</span>
+          <select id="f-imageFit"><option value="cover">Cover 裁滿</option><option value="contain">Contain 完整</option></select>
+        </div>
+        <div class="field"><span>Logo 裁切</span>
+          <select id="f-logoFit"><option value="cover">Cover 裁滿</option><option value="contain" selected>Contain 完整</option></select>
+        </div>
+      </div>
+      <div class="field"><span>主色</span>
+        <div class="colorrow"><input id="f-color" type="color" value="#6d5ce7"><code id="colorhex">#6d5ce7</code></div>
+      </div>
 
-    <div class="field"><span>Logo 網址</span>
-      <div class="imgrow"><div class="pv" id="p-logo"></div><input id="f-logo" type="text"></div>
-    </div>
-    <div class="field"><span>Logo 裁切</span>
-      <select id="f-logoFit"><option value="cover">Cover(裁滿)</option><option value="contain" selected>Contain(完整露出)</option></select>
-    </div>
+      <a class="bigdl" id="bigdl" href="#">⬇ 下載目前這張 PNG</a>
+    </section>
 
-    <div class="field"><span>主色</span>
-      <div class="colorrow"><input id="f-color" type="color" value="#6d5ce7"><code id="colorhex">#6d5ce7</code></div>
-    </div>
-
-    <a class="bigdl" id="bigdl" href="#">⬇ 下載目前這張 PNG(1200×630)</a>
-  </aside>
+    <section class="panel">
+      <h2>Meta 檢查器 <span class="badges" id="inspBadges"></span></h2>
+      <div id="inspList"></div>
+    </section>
+  </div>
 
 </div>
 
@@ -161,6 +183,7 @@
   let data = { ...DEFAULTS };
   let selTemplate = OG_TEMPLATES[0].id;
   let platform = "fb";
+  let imgDims = null; // 掃描到的 og:image 原始尺寸(給檢查器)
 
   const b64 = (obj) => encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(obj)))));
   const escT = (s) => String(s).replace(/</g, "&lt;");
@@ -180,7 +203,7 @@
     const dom = (data.domain || "").toUpperCase();
     const chrome = {
       fb: `<div class="chrome-fb">${shotHtml()}<div class="bar"><div class="dom">${escT(dom)}</div><div class="t">${escT(data.title)}</div></div></div>`,
-      x: `<div><div class="chrome-x">${shotHtml()}<div class="pill">${escT(data.title)}</div></div><div class="dom" style="font-size:13px;color:#8b98a5;padding:7px 4px 0">來自 ${escT(data.domain || "")}</div></div>`,
+      x: `<div><div class="chrome-x">${shotHtml()}<div class="pill">${escT(data.title)}</div></div><div style="font-size:13px;color:#8b98a5;padding:7px 4px 0">來自 ${escT(data.domain || "")}</div></div>`,
       li: `<div class="chrome-li">${shotHtml()}<div class="bar"><div class="t">${escT(data.title)}</div><div class="dom">${escT(data.domain || "")}</div></div></div>`,
       dc: `<div class="chrome-dc"><div class="site">${escT(data.site)}</div><div class="t">${escT(data.title)}</div><div class="d">${escT(data.desc)}</div>${shotHtml()}</div>`,
     }[platform];
@@ -226,6 +249,60 @@
   }
   addEventListener("resize", () => { scaleShots(document.body); });
 
+  /* ── Meta 檢查器(中文長度標準)── */
+  function inspect() {
+    const items = [];
+    const t = data.title || "", d = data.desc || "";
+    // 標題
+    if (!t) items.push({ lv: "err", tt: "缺標題", tag: "og:title", dd: "分享卡最重要的一行,一定要有。" });
+    else if (t.length < 8) items.push({ lv: "warn", tt: "標題偏短", tag: "og:title", dd: `${t.length} 字 — 8~30 字比較能吃滿卡片版面。` });
+    else if (t.length > 40) items.push({ lv: "warn", tt: "標題偏長", tag: "og:title", dd: `${t.length} 字 — 超過 40 字在多數平台會被截斷。` });
+    else items.push({ lv: "ok", tt: "標題 OK", tag: "og:title", dd: `「${t.slice(0, 22)}${t.length > 22 ? "…" : ""}」— ${t.length} 字。` });
+    // 描述
+    if (!d) items.push({ lv: "err", tt: "缺描述", tag: "og:description", dd: "FB/Discord 會顯示描述;空著等於浪費一行廣告位。" });
+    else if (d.length > 60) items.push({ lv: "warn", tt: "描述偏長", tag: "og:description", dd: `${d.length} 字 — 社群預覽約顯示 40~60 字,手機更短。` });
+    else items.push({ lv: "ok", tt: "描述 OK", tag: "og:description", dd: `${d.length} 字。` });
+    // 圖片
+    if (!data.image) items.push({ lv: "err", tt: "缺圖片", tag: "og:image", dd: "沒有 og:image 的連結在動態牆上幾乎沒人點。" });
+    else if (imgDims?.error) items.push({ lv: "warn", tt: "圖片載入失敗", tag: "og:image", dd: "網址可能失效或擋外連,分享出去可能開天窗。" });
+    else if (imgDims) {
+      const ratio = imgDims.w / imgDims.h;
+      if (Math.abs(ratio - 1.91) > 0.18) items.push({ lv: "warn", tt: "圖片比例不對", tag: "og:image", dd: `偵測到 ${imgDims.w}×${imgDims.h} — 多數平台預期 1.91:1(1200×630),會被裁切或留黑邊。用下面模板出圖就是標準尺寸。` });
+      else if (imgDims.w < 600) items.push({ lv: "warn", tt: "圖片解析度偏低", tag: "og:image", dd: `${imgDims.w}×${imgDims.h} — 建議至少 1200×630,不然高解析螢幕會糊。` });
+      else items.push({ lv: "ok", tt: "圖片尺寸 OK", tag: "og:image", dd: `${imgDims.w}×${imgDims.h},比例 ${ratio.toFixed(2)}:1。` });
+    } else items.push({ lv: "ok", tt: "圖片存在", tag: "og:image", dd: "量測尺寸中…" });
+    // 站名 / logo
+    items.push(data.site ? { lv: "ok", tt: "站名 OK", tag: "og:site_name", dd: `「${data.site}」` } : { lv: "warn", tt: "缺站名", tag: "og:site_name", dd: "有站名,分享卡跟模板都更有品牌感。" });
+    items.push(data.logo ? { lv: "ok", tt: "Logo 存在", tag: "favicon", dd: "模板會拿它當品牌識別。" } : { lv: "warn", tt: "缺 Logo", tag: "favicon", dd: "沒抓到 favicon;可手動貼一個。" });
+    return items;
+  }
+
+  function renderInspector() {
+    const items = inspect();
+    const count = (lv) => items.filter((i) => i.lv === lv).length;
+    const icons = { err: "✕", warn: "!", ok: "✓" };
+    $("inspBadges").innerHTML = ["err", "warn", "ok"]
+      .filter((lv) => count(lv))
+      .map((lv) => `<span class="bdg ${lv}">${icons[lv]} ${count(lv)}</span>`).join("");
+    $("inspList").innerHTML = items
+      .sort((a, b) => ({ err: 0, warn: 1, ok: 2 }[a.lv] - { err: 0, warn: 1, ok: 2 }[b.lv]))
+      .map((i) => `
+        <div class="insp-item">
+          <div class="ic ${i.lv}">${icons[i.lv]}</div>
+          <div><div class="tt">${escT(i.tt)}<code>${i.tag}</code></div><div class="dd">${escT(i.dd)}</div></div>
+        </div>`).join("");
+  }
+
+  function measureImage() {
+    imgDims = null;
+    if (!data.image) return renderInspector();
+    const im = new Image();
+    im.onload = () => { imgDims = { w: im.naturalWidth, h: im.naturalHeight }; renderInspector(); };
+    im.onerror = () => { imgDims = { error: true }; renderInspector(); };
+    im.src = data.image;
+    renderInspector();
+  }
+
   function syncFields() {
     F.forEach((k) => ($("f-" + k).value = data[k] || ""));
     $("p-image").style.backgroundImage = data.image ? `url("${data.image}")` : "none";
@@ -239,11 +316,11 @@
       data = { ...data, [k]: $("f-" + k).value };
       $("colorhex").textContent = data.color;
       clearTimeout(timer);
-      timer = setTimeout(() => { syncFields(); renderStage(); renderGrid(); }, 400);
+      timer = setTimeout(() => { syncFields(); renderStage(); renderGrid(); measureImage(); }, 400);
     })
   );
 
-  $("reset").addEventListener("click", () => { data = { ...DEFAULTS }; syncFields(); renderStage(); renderGrid(); });
+  $("reset").addEventListener("click", () => { data = { ...DEFAULTS }; syncFields(); renderStage(); renderGrid(); measureImage(); });
 
   $("go").addEventListener("click", scan);
   $("url").addEventListener("keydown", (e) => { if (e.key === "Enter") scan(); });
@@ -257,10 +334,8 @@
       const og = await res.json();
       if (og.error) throw new Error(og.error);
       data = { ...DEFAULTS, ...og, domain: new URL(url).hostname };
-      syncFields();
-      renderStage();
-      renderGrid();
-      $("status").textContent = `抓到:「${og.title}」— 上面是分享實況,點下面卡片換模板。`;
+      syncFields(); renderStage(); renderGrid(); measureImage();
+      $("status").textContent = `抓到:「${og.title}」— 上面是分享實況,右下是這頁 OG 健檢。`;
     } catch (e) {
       $("status").textContent = "掃描失敗:" + e.message + "(可直接手動填右邊欄位)";
     } finally {
@@ -272,6 +347,7 @@
   syncFields();
   renderStage();
   renderGrid();
+  measureImage();
 </script>
 </body>
 </html>
