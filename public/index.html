@@ -71,7 +71,8 @@
   .card .dl:hover { background:#171a20; color:#fff }
 
   /* ── 右:懸浮小面板(不貼邊、卡片式)── */
-  .side { width:372px; flex-shrink:0; padding:38px 0 70px; position:sticky; top:62px; max-height:calc(100vh - 62px); overflow-y:auto; display:flex; flex-direction:column; gap:18px }
+  /* 不 sticky、不自帶捲軸 — 跟著頁面自然捲 */
+  .side { width:372px; flex-shrink:0; padding:38px 0 70px; display:flex; flex-direction:column; gap:18px }
   .panel { background:#fff; border:1px solid #e9eaee; border-radius:16px; box-shadow:0 1px 3px rgba(16,24,40,.06), 0 10px 34px rgba(16,24,40,.06); padding:18px 20px }
   .panel h2 { font-size:15px; font-weight:900; display:flex; justify-content:space-between; align-items:center; margin-bottom:14px }
   .panel h2 button { font-size:12px; font-weight:700; color:#8a8f98; background:none; border:0; cursor:pointer }
